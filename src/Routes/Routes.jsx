@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 import RootLayout from "../Layouts/RootLayout";
 import BookDetails from "../Pages/BookDetails/BookDetails";
@@ -10,12 +11,27 @@ export const router = createBrowserRouter([
     path: "/",
     Component: RootLayout,
     children: [
-      { index: true, Component: Home, loader: () => fetch("booksData.json") },
+      {
+        index: true,
+        element: (
+          <Suspense
+            fallback={<span className="loading loading-bars loading-xl"></span>}
+          >
+            <Home />
+          </Suspense>
+        ),
+
+        loader: () => fetch("booksData.json"),
+      },
       { path: "/listed-books", Component: ListedBooks },
-      { path: "/page-to-read", Component: PagesToRead },
+      {
+        path: "/page-to-read",
+        Component: PagesToRead,
+        loader: () => fetch("booksData.json"),
+      },
       {
         path: "/book-details/:id",
-        
+
         Component: BookDetails,
       },
     ],
